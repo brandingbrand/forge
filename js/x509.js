@@ -1275,9 +1275,6 @@ pki.certificateFromAsn1 = function(obj, computeHash) {
 
   // get oid
   var oid = asn1.derToOid(capture.publicKeyOid);
-  if(oid !== pki.oids['rsaEncryption']) {
-    throw new Error('Cannot read public key. OID is not RSA.');
-  }
 
   // create certificate
   var cert = pki.createCertificate();
@@ -1398,7 +1395,9 @@ pki.certificateFromAsn1 = function(obj, computeHash) {
   }
 
   // convert RSA public key from ASN.1
-  cert.publicKey = pki.publicKeyFromAsn1(capture.subjectPublicKeyInfo);
+  if(oid === pki.oids['rsaEncryption']) {
+    cert.publicKey = pki.publicKeyFromAsn1(capture.subjectPublicKeyInfo);
+  }
 
   return cert;
 };
